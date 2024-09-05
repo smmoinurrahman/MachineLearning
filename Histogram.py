@@ -1,57 +1,44 @@
 import cv2
 import numpy as np
 
-img = cv2.imread('Images/input_image-1.jpg')
-# if img is None:
-#     print('Could not find the image')
-#
-# kernel1 = np.array([[-1, -1, -1],
-#                    [-1, 9, -1],
-#                    [-1, -1, -1]])
-# identity = cv2.filter2D(img, -1, kernel1)
-# cv2.imshow('Original', img)
-# cv2.imshow('Identity', identity)
-# cv2.waitKey(0)
-# # cv2.imwrite('Identity', identity)
-# cv2.destroyAllWindows()
-#
-# kernel2 = np.ones((5, 5), np.float32) / 25
-# img2=cv2.filter2D(img, -1, kernel2)
-#
-# cv2.imshow('Original', img)
-# cv2.imshow('Identity', img2)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-#Blur
-# img_blur = cv2.blur(img, (5, 5))
-# cv2.imshow('Original', img)
-# cv2.imshow('Blur', img_blur)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-#median blur
-# img_blur = cv2.medianBlur(img, ksize=5)
-# cv2.imshow('Original', img)
-# cv2.imshow('Median Blurred', img_blur)
-#
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+from matplotlib import pyplot as plt
 
-# #sharpening by convolution kernel
-# kernel3= np.array([[0, -1, 0],
-#                    [-1, 5, -1],
-#                    [0, -1, 0]])
-#
-# sharpen_img = cv2.filter2D(img, -1, kernel3)
-# cv2.imshow('Original', img)
-# cv2.imshow('Sharpened',  sharpen_img)
-#
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+image = cv2.imread("Images/Mask.jpg")
+image= cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-#bilateral filtering
-bilateral_filter = cv2.bilateralFilter(img, 9, 75, 75)
-cv2.imshow('Original', img)
-cv2.imshow('Sharpened',  bilateral_filter)
+#equslization
+
+eqlz= cv2.equalizeHist(image)
+clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+clahe_image = clahe.apply(image)
+com = np.hstack((image,eqlz, clahe_image))
+cv2.imshow("Image Comparison", com)
+
 
 cv2.waitKey(0)
-cv2.destroyAllWindows()
+#histogram
+hist1 = cv2.calcHist([clahe_image],[0],None,[256],[0,256])
+hist2 = cv2.calcHist([eqlz],[0],None,[256],[0,256])
+hist3 = cv2.calcHist([image],[0],None,[256],[0,256])
+plt.figure()
+plt.title("Histogram Comparison")
+plt.xlabel("Bins")
+plt.ylabel("# of Pixels")
+plt.plot(hist1)
+plt.plot(hist2)
+plt.plot(hist3)
+plt.legend(["Clahe Histogram","Equalized Histogram","Histogram"])
+plt.xlim([0,256])
+plt.show()
+# #normalized histogram
+# hist /= hist.sum()
+# plt.figure()
+# plt.title("Grayscale Histogram(Normalized)")
+# plt.xlabel("Bins")
+# plt.ylabel("# of Pixels")
+# plt.plot(hist)
+# plt.xlim([0,256])
+# plt.show()
+
+
+
