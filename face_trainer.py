@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 
-path ='Dataset'
+path = 'Image_Dataset'
 
 recognizer = cv2.face.LBPHFaceRecognizer.create()
 detector = cv2.CascadeClassifier(cv2.data.haarcascades  + 'haarcascade_frontalface_default.xml')
